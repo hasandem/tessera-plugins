@@ -1,0 +1,33 @@
+{
+  "_meta": { "name": "Norsk bokmål" },
+  "screen": {
+    "name": "Avfallshenting",
+    "today": "I dag",
+    "none": "Ingen tømming planlagt",
+    "waiting": "Henter tømmedager",
+    "upcoming": "Kommende tømminger",
+    "failed": "Kalenderen svarte ikke",
+    "in_bar": "I topplinjen",
+    "days_ahead": "Dager i forkant",
+    "open_card": "Kommende tømminger",
+    "bar_today": "I dag: {what}",
+    "bar_tomorrow": "I morgen: {what}",
+    "bar_later": "{when}: {what}"
+  },
+  "app": {
+    "name": "Avfallshenting",
+    "summary": "Se neste tømmedag fra kalenderen i Home Assistant, på en flis og i topplinjen.",
+    "input_calendar": "Tømmekalender",
+    "input_calendar_hint": "Velg kalenderen med tømmedager fra Waste Collection Schedule, Afvalwijzer eller din egen kalender.",
+    "tile_name": "Neste tømming",
+    "tile_example": "Papir, i morgen",
+    "card_name": "Kommende tømminger",
+    "tap_upcoming": "Vis kommende tømminger",
+    "bar_soon": "Neste tømming",
+    "bar_example": "I morgen: Papir",
+    "setting_in_bar": "I topplinjen",
+    "setting_in_bar_hint": "Vis neste tømming i topplinjen.",
+    "setting_days_ahead": "Dager i forkant",
+    "setting_days_ahead_hint": "Hvor mange dager før tømming påminnelsen skal vises i topplinjen."
+  }
+}

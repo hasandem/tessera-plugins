@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.8 - 2026-11-06
+- Adds Norwegian Bokmål texts. Choose Bokmål in a Tessera version that includes that language, then rebuild the screen.
+- Recognises Norwegian waste names, including glass and metal packaging, without changing the calendar's names.
+- Adds setup instructions for ROAF through Waste Collection Schedule and for installing this fork from a GitHub test branch.
+
 ## 1.0.7 - 2026-10-11
 - In Dark mode the tile's "Tomorrow" or "In 3 days" is readable again, also after switching between light and dark. On most screens it stayed dark on a dark tile.
 

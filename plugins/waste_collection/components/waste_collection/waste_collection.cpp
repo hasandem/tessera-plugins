@@ -1,4 +1,5 @@
 #include "waste_collection.h"
+#include "waste_kind.h"
 #include "esphome/core/time.h"
 #include <algorithm>
 #include <cctype>
@@ -14,20 +15,16 @@ namespace ui = tessera::ui;
 
 // ---- What goes out, and when ----
 
-// The colour of a kind of waste, by the words collection calendars use for it (Dutch and English): paper blue,
+// The colour of a kind of waste, by the words collection calendars use for it (Norwegian, Dutch and English): paper blue,
 // garden and food waste green, plastic and packaging amber, glass purple, the rest in the card's muted ink.
 static theme::Role colour_of(const std::string &what) {
-  std::string low = what;
-  std::transform(low.begin(), low.end(), low.begin(), [](unsigned char c) { return std::tolower(c); });
-  auto has = [&](std::initializer_list<const char *> words) {
-    for (const char *word : words)
-      if (low.find(word) != std::string::npos) return true;
-    return false;
-  };
-  if (has({"papier", "paper", "karton", "cardboard"})) return theme::MARK_BLUE;
-  if (has({"gft", "groen", "green", "garden", "tuin", "bio", "organic", "food", "compost"})) return theme::MARK_GREEN;
-  if (has({"plastic", "pmd", "pbd", "packag", "verpakking", "blik"})) return theme::MARK_AMBER;
-  if (has({"glas", "glass"})) return theme::MARK_PURPLE;
+  switch (waste_kind(what)) {
+    case WasteKind::PAPER: return theme::MARK_BLUE;
+    case WasteKind::ORGANIC: return theme::MARK_GREEN;
+    case WasteKind::PLASTIC: return theme::MARK_AMBER;
+    case WasteKind::GLASS_METAL: return theme::MARK_PURPLE;
+    case WasteKind::GENERAL: return theme::MUTED;
+  }
   return theme::MUTED;
 }
 

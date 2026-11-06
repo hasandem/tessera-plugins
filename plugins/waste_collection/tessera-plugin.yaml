@@ -2,10 +2,10 @@
 # add (docs/MANIFEST.md): a tile that belongs to an entity, a card, a tap action for calendar tiles, an item for the top
 # bar, rows on the screen's settings page, and a Home Assistant command asked through the app.
 id: waste_collection
-version: 1.0.7
+version: 1.0.8
 api: "0.7"
 icon: recycle
-maintainer: MaxGramser
+maintainer: hasandem
 license: MIT
 stage: example
 topics: [home, calendar]

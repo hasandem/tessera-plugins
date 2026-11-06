@@ -4,6 +4,9 @@ tiles:
   - tile: next
     name: Waste
     entity: calendar.waste
+  - tile: next
+    name: ROAF
+    entity: calendar.roaf_example
 
 states:
   calendar.waste:
@@ -11,6 +14,13 @@ states:
     attributes:
       friendly_name: Waste collection
       message: Paper
+      start_time: "{now+1d}"
+      end_time: "{now+2d}"
+  calendar.roaf_example:
+    state: "off"
+    attributes:
+      friendly_name: ROAF example
+      message: Papir og papp
       start_time: "{now+1d}"
       end_time: "{now+2d}"
 
@@ -26,3 +36,10 @@ commands:
         - { start: "{now+4d}", end: "{now+5d}", summary: Organic }
         - { start: "{now+8d}", end: "{now+9d}", summary: Plastic }
         - { start: "{now+15d}", end: "{now+16d}", summary: Residual waste }
+    calendar.roaf_example:
+      events:
+        - { start: "{now+1d}", end: "{now+2d}", summary: Papir og papp }
+        - { start: "{now+1d}", end: "{now+2d}", summary: Glass- og metallemballasje }
+        - { start: "{now+4d}", end: "{now+5d}", summary: Matavfall }
+        - { start: "{now+8d}", end: "{now+9d}", summary: Plastemballasje }
+        - { start: "{now+15d}", end: "{now+16d}", summary: Restavfall }
