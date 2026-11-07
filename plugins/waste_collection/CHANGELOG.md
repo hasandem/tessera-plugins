@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.9 - 2026-11-07
+- Makes the upcoming collections list easier to read: waste names and dates share the largest existing text size that fits the card's width and height, with an aligned date column.
+- Keeps room for at least four collections when available, then shows as many rows as fit. Rebuild the screen with this plugin update to apply the change.
+
 ## 1.0.8 - 2026-11-06
 - Adds Norwegian Bokmål texts. Choose Bokmål in a Tessera version that includes that language, then rebuild the screen.
 - Recognises Norwegian waste names, including glass and metal packaging, without changing the calendar's names.

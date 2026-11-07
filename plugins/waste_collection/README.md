@@ -35,6 +35,10 @@ can change them, and the editor shows them in the plugin's details on the screen
   metal packaging are recognised before general packaging. The calendar's names stay as they are.
 - The card asks Home Assistant for the coming events through Tessera (`calendar.get_events`); the screen reads the
   calendar's next event itself for the top bar.
+- The upcoming list measures its available width and height and uses the largest of the screen's existing text sizes
+  that fits both waste names and dates. Both columns use the same size, with dates aligned on the right. It keeps room
+  for at least four rows when that many collections are available, and then shows as many rows as fit. Smaller screens
+  and long names select a smaller text size automatically; the screen's fonts and language stay the same.
 - The top bar item shows only while the next collection is within the days you set under **Waste days ahead**.
 - Works on every board, the CYD included.
 

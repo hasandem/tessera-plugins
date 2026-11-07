@@ -175,11 +175,11 @@ class UpcomingCard : public tessera::Card {
       ui::set_text(note_, plugin_->text("failed"));
       return;
     }
-    struct Row { int32_t day; std::string what; };
+    struct Row { int32_t day; std::string what, when; };
     std::vector<Row> rows;
     for (JsonObjectConst event : message["result"][calendar_]["events"].as<JsonArrayConst>()) {
       const int32_t day = day_of(event["start"] | "");
-      if (day != INT32_MIN) rows.push_back({day, event["summary"] | ""});
+      if (day != INT32_MIN) rows.push_back({day, event["summary"] | "", ""});
     }
     std::sort(rows.begin(), rows.end(), [](const Row &a, const Row &b) { return a.day < b.day; });
     if (rows.empty()) {
@@ -187,27 +187,52 @@ class UpcomingCard : public tessera::Card {
       return;
     }
     lv_obj_add_flag(note_, LV_OBJ_FLAG_HIDDEN);
-    // A row per collection, as many as fit: its colour, what goes out, and the day on the right.
-    const int line = std::max(ui::line_height(Font::BODY_LARGE), ui::line_height(Font::BODY));
-    const int gap = ui::px(ui::large() ? 14 : 8), dot = ui::px(ui::large() ? 12 : 8), step = line + gap;
-    const int fit = std::max(1, (height_ + gap) / step);
     const int32_t now = today();
+    for (auto &row : rows) {
+      const int32_t days = now == INT32_MIN ? -1 : row.day - now;
+      row.when = days >= 0 && days <= 1 ? when_text(plugin_, days) : day_text(row.day);
+    }
+    // Use the largest of the screen's own text faces that fits both columns and at least four rows (or all rows
+    // when there are fewer). Measure the rows this face would show, so a date never crowds its waste name.
+    const int gap = ui::px(ui::large() ? 14 : 8), dot = ui::px(ui::large() ? 12 : 8);
+    const int inset = dot + ui::px(8), columns_gap = ui::px(16);
+    const int wanted = std::min(4, static_cast<int>(rows.size()));
+    Font face = Font::BODY;
+    for (Font candidate : {Font::VALUE, Font::HEADLINE, Font::BODY_LARGE, Font::BODY}) {
+      const int line = ui::line_height(candidate);
+      const int fit = (height_ + gap) / (line + gap);
+      if (line > height_ || fit < wanted) continue;
+      int what_width = 0, when_width = 0;
+      for (int i = 0; i < static_cast<int>(rows.size()) && i < fit; ++i) {
+        what_width = std::max(what_width, ui::text_width(rows[i].what, candidate));
+        when_width = std::max(when_width, ui::text_width(rows[i].when, candidate));
+      }
+      if (inset + what_width + columns_gap + when_width + ui::px(2) <= width_) {
+        face = candidate;
+        break;
+      }
+    }
+    const int line = ui::line_height(face), step = line + gap;
+    const int fit = std::max(0, (height_ + gap) / step);
+    int when_w = 0;
+    for (int i = 0; i < static_cast<int>(rows.size()) && i < fit; ++i)
+      when_w = std::max(when_w, ui::text_width(rows[i].when, face) + ui::px(2));
+    // A shared, right-aligned date column keeps all the dates readable and the names clear of them.
+    when_w = std::min(when_w, std::max(1, width_ - inset - columns_gap - 1));
     for (int i = 0; i < static_cast<int>(rows.size()) && i < fit; ++i) {
       const int y = i * step;
       auto *mark = ui::block(parent_, colour_of(rows[i].what));
       lv_obj_set_size(mark, dot, dot);
       lv_obj_set_style_radius(mark, LV_RADIUS_CIRCLE, 0);
       lv_obj_set_pos(mark, 0, y + (line - dot) / 2);
-      const int32_t days = now == INT32_MIN ? -1 : rows[i].day - now;
-      const std::string when = days >= 0 && days <= 1 ? when_text(plugin_, days) : day_text(rows[i].day);
-      auto *right = ui::label(parent_, Font::BODY, theme::MUTED);
-      const int when_w = ui::text_width(when, Font::BODY) + ui::px(2);
-      lv_obj_set_size(right, when_w, ui::line_height(Font::BODY));
-      lv_obj_set_pos(right, width_ - when_w, y + (line - ui::line_height(Font::BODY)) / 2);
-      ui::set_text(right, when);
-      auto *what = ui::label(parent_, Font::BODY_LARGE, theme::INK);
-      lv_obj_set_size(what, std::max(1, width_ - when_w - dot - ui::px(16)), ui::line_height(Font::BODY_LARGE));
-      lv_obj_set_pos(what, dot + ui::px(8), y + (line - ui::line_height(Font::BODY_LARGE)) / 2);
+      auto *right = ui::label(parent_, face, theme::MUTED);
+      lv_obj_set_size(right, when_w, line);
+      lv_obj_set_pos(right, width_ - when_w, y);
+      lv_obj_set_style_text_align(right, LV_TEXT_ALIGN_RIGHT, 0);
+      ui::set_text(right, rows[i].when);
+      auto *what = ui::label(parent_, face, theme::INK);
+      lv_obj_set_size(what, std::max(1, width_ - when_w - inset - columns_gap), line);
+      lv_obj_set_pos(what, inset, y);
       ui::set_text(what, rows[i].what);
     }
   }
